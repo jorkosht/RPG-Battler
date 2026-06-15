@@ -1,7 +1,9 @@
 #include "Mage.h"
 
-unsigned Mage::ability(unsigned dmg) 
+Mage::Mage(const std::string& name, User* owner)
+        : PlayerCharacter(name, CharConstants::MAGE_HP, CharConstants::MAX_MAGE_DMG, CharacterType::Mage, owner) {}
+
+void Mage::ability(unsigned& dmg)
 {
-    int newDmg = Constants::MAX_MAGE_DMG + getDmgUpgrades() - dmg;
-    return newDmg;
+    dmg = CharConstants::MAX_MAGE_DMG + getDmgUpgrades() - dmg;
 }

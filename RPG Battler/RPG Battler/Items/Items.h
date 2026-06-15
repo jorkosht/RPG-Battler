@@ -1,10 +1,23 @@
 #pragma once
-#include "ItemType.h"
+#include <iostream>
+#include "Constants.h"
+
+class User;
 
 class Items
 {
     ItemType type;
     unsigned price;
+    bool isActive = false;
 public:
+    Items();
+    Items(ItemType type, unsigned price);
+    virtual ~Items();
     
+    const ItemType getType() const;
+    
+    void setPrice(unsigned price);
+    
+    unsigned getPrice() const;
 };
+

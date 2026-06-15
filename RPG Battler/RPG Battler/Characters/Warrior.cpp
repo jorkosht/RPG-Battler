@@ -1,8 +1,11 @@
 #include "Warrior.h"
 
-unsigned Warrior::ability(unsigned dmg)
+Warrior::Warrior(const std::string& name, User* owner)
+        : PlayerCharacter(name, CharConstants::WARRIOR_HP, CharConstants::MAX_WARRIOR_DMG, CharacterType::Warrior, owner) {}
+
+void Warrior::ability(unsigned& dmg)
 {
-    int block = rand() % Constants::WARRIOR_BLOCK;
-    if (dmg < block) return 0;
-    return dmg - block;
+    int block = rand() % CharConstants::WARRIOR_BLOCK;
+    if (dmg < block) dmg = 0;
+    dmg -= block;
 }

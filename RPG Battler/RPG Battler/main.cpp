@@ -1,9 +1,11 @@
-#include <iostream>
-#include "User.h"
+#include "Game.h"
+#include <cstdlib>
+#include <ctime>
 
 int main()
 {
-    srand(time(nullptr));
-    User gamer;
+    srand(static_cast<unsigned>(time(nullptr)));
+    Game game;
+    game.run();
     return 0;
 }

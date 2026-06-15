@@ -5,5 +5,6 @@ class Archer : public PlayerCharacter
 {
     
 public:
-    unsigned ability(unsigned dmg) override;
+    Archer(const std::string& name, User* owner);
+    void ability(unsigned& dmg) override;
 };

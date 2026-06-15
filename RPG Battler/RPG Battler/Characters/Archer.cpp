@@ -1,6 +1,9 @@
 #include "Archer.h"
 
-unsigned Archer::ability(unsigned dmg)
+Archer::Archer(const std::string& name, User* owner)
+        : PlayerCharacter(name, CharConstants::ARCHER_HP, CharConstants::MAX_ARCHER_DMG, CharacterType::Archer, owner) {}
+
+void Archer::ability(unsigned& dmg)
 {
-    return dmg * Constants::ARCHER_DMG_MULTIPLIER;
+    dmg *= CharConstants::ARCHER_DMG_MULTIPLIER;
 }

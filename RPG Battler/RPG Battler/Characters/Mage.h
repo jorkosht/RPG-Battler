@@ -5,5 +5,6 @@ class Mage : public PlayerCharacter
 {
     
 public:
-    unsigned ability(unsigned dmg) override;
+    Mage(const std::string& name, User* owner);
+    void ability(unsigned& dmg) override;
 };

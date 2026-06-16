@@ -17,11 +17,11 @@ std::string toString(ItemType type)
     switch (type)
     {
         case ItemType::Potion: return "Potion";
-        case ItemType::Blade: return "Blade";
+        case ItemType::Blade:  return "Blade";
         case ItemType::Mirror: return "Mirror";
-        case ItemType::Beam: return "Beam";
+        case ItemType::Beam:   return "Beam";
         case ItemType::Shield: return "Shield";
-        default: return "Unknown";
+        default:               return "Unknown";
     }
 }
 
@@ -30,9 +30,9 @@ std::string toString(CharacterType type)
     switch (type)
     {
         case CharacterType::Warrior: return "Warrior";
-        case CharacterType::Mage: return "Mage";
-        case CharacterType::Archer: return "Archer";
-        default: return "Unknown";
+        case CharacterType::Mage:    return "Mage";
+        case CharacterType::Archer:  return "Archer";
+        default:                     return "Unknown";
     }
 }
 
@@ -41,11 +41,11 @@ unsigned itemPrice(ItemType type)
     switch (type)
     {
         case ItemType::Potion: return ItemConstants::POTION_PRICE;
-        case ItemType::Blade: return ItemConstants::BLADE_PRICE;
+        case ItemType::Blade:  return ItemConstants::BLADE_PRICE;
         case ItemType::Mirror: return ItemConstants::MIRROR_PRICE;
-        case ItemType::Beam: return ItemConstants::BEAM_PRICE;
+        case ItemType::Beam:   return ItemConstants::BEAM_PRICE;
         case ItemType::Shield: return ItemConstants::SHIELD_PRICE;
-        default: return 0;
+        default:               return 0;
     }
 }
 

@@ -11,7 +11,7 @@ namespace CharConstants {
 
     constexpr unsigned WARRIOR_BLOCK = 4;
     constexpr unsigned WARRIOR_BLOCK_MIN = 1;
-
+    
     constexpr unsigned ARCHER_DMG_THRESHOLD = 4;
     constexpr unsigned ARCHER_DMG_MULTIPLIER = 2;
 
@@ -39,5 +39,17 @@ namespace BattleConstants {
     constexpr unsigned LOSE_XP = 5;
 }
 
-enum class CharacterType { Warrior, Mage, Archer };
-enum class ItemType { Potion = 0, Blade = 1, Mirror = 2, Beam = 3, Shield = 4 };
+enum class CharacterType
+{
+    Warrior,
+    Mage,
+    Archer
+};
+enum class ItemType
+{
+    Potion,
+    Blade,
+    Mirror,
+    Beam,
+    Shield
+};

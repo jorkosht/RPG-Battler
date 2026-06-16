@@ -14,7 +14,6 @@ void Leaderboard::updateRanks(std::vector<User*>& users)
             return a->getTotalXP() > b->getTotalXP();
         return a->getWinRate() > b->getWinRate();
     });
-
     for (int i = 0; i < static_cast<int>(users.size()); ++i)
         users[i]->setRank(i + 1);
 }

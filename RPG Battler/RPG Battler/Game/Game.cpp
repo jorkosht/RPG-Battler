@@ -30,7 +30,7 @@ void Game::loadAll()
         {
             try
             {
-                users.push_back(std::make_unique<User>(User::load(entry.path().string())));
+                users.push_back(User::load(entry.path().string()));
             }
             catch (const std::exception& e)
             {
@@ -44,7 +44,9 @@ void Game::loadAll()
 void Game::saveAll() const
 {
     for (auto& u : users)
+    {
         u->save(DATA_DIR);
+    }
 }
 
 User* Game::findUser(const std::string& username)
@@ -76,7 +78,7 @@ void Game::registerUser()
 
     if (findUser(username))
     {
-        std::cout << "Username already taken.\n";
+        std::cout << "Username already taken." << std::endl;
         return;
     }
 
@@ -85,7 +87,7 @@ void Game::registerUser()
 
     auto newUser = std::make_unique<User>(username, password);
 
-    std::cout << "\nChoose your starting character type:" << std::endl
+    std::cout << std::endl << "Choose your starting character type:" << std::endl
               << "1. Warrior (HP:" << CharConstants::WARRIOR_HP
               << " DMG:1-" << CharConstants::MAX_WARRIOR_DMG << ")" << std::endl
               << "2. Mage    (HP:" << CharConstants::MAGE_HP
@@ -108,7 +110,7 @@ void Game::registerUser()
             newUser->addCharacter(std::make_unique<Warrior>(charName, newUser.get()));
     }
 
-    std::cout << "\nChoose your starting item:" << std::endl;
+    std::cout << std::endl << "Choose your starting item:" << std::endl;
     for (int i = 0; i < ItemConstants::NUMBER_OF_ITEMS; ++i)
         std::cout << i + 1 << ". " << toString(static_cast<ItemType>(i))
                   << " (" << itemPrice(static_cast<ItemType>(i)) << " XP)" << std::endl;
@@ -151,19 +153,17 @@ User* Game::loginUser()
     return u;
 }
 
-// ---- Shop ----
 void Game::shopMenu(User& user)
 {
     while (true)
     {
-        std::cout << "\n=== Shop === (Available XP: " << user.getAvailableXP() << ")" << std::endl
+        std::cout << std::endl << "=== Shop === (Available XP: " << user.getAvailableXP() << ")" << std::endl
                   << "1. Buy item" << std::endl
                   << "2. Buy new character (50 XP)" << std::endl
                   << "3. Level up character (100 XP)" << std::endl
                   << "4. Back" << std::endl;
 
         int choice = readInt();
-
         if (choice == 4) break;
 
         if (choice == 1)
@@ -177,8 +177,7 @@ void Game::shopMenu(User& user)
             if (ic < 1 || ic > ItemConstants::NUMBER_OF_ITEMS) continue;
 
             ItemType it = static_cast<ItemType>(ic - 1);
-            unsigned price = itemPrice(it);
-            if (!user.spendXP(price))
+            if (!user.spendXP(itemPrice(it)))
             {
                 std::cout << "Not enough XP." << std::endl; continue;
             }
@@ -218,11 +217,7 @@ void Game::shopMenu(User& user)
         }
         else if (choice == 3)
         {
-            if (user.getCharacters().empty())
-            {
-                std::cout << "No characters." << std::endl;
-                continue;
-            }
+            if (user.getCharacters().empty()) { std::cout << "No characters." << std::endl; continue; }
             if (!user.spendXP(CharConstants::LEVEL_UP_COST))
             {
                 std::cout << "Not enough XP (need " << CharConstants::LEVEL_UP_COST << ")." << std::endl;
@@ -238,21 +233,12 @@ void Game::shopMenu(User& user)
                 continue;
             }
             PlayerCharacter* ch = user.getCharacters()[ci - 1].get();
-
             std::cout << "Choose upgrade:" << std::endl
                       << "1. +2 Max HP" << std::endl
                       << "2. +1 Max Damage" << std::endl;
             int uc = readInt();
-            if (uc == 1)
-            {
-                ch->levelUpHP();
-                std::cout << "+2 Max HP applied." << std::endl;
-            }
-            else if (uc == 2)
-            {
-                ch->levelUpDMG();
-                std::cout << "+1 Max Damage applied." << std::endl;
-            }
+            if (uc == 1)      { ch->levelUpHP();  std::cout << "+2 Max HP applied." << std::endl; }
+            else if (uc == 2) { ch->levelUpDMG(); std::cout << "+1 Max Damage applied." << std::endl; }
             else
             {
                 std::cout << "Invalid – refunding XP." << std::endl;
@@ -265,11 +251,7 @@ void Game::shopMenu(User& user)
 
 void Game::battleMenu(User& user)
 {
-    if (users.size() < 2)
-    {
-        std::cout << "No other players to fight!" << std::endl;
-        return;
-    }
+    if (users.size() < 2) { std::cout << "No other players to fight!" << std::endl; return; }
 
     std::cout << std::endl << "=== Choose Opponent ===" << std::endl;
     std::vector<User*> opponents;
@@ -285,17 +267,8 @@ void Game::battleMenu(User& user)
     if (choice < 1 || choice > static_cast<int>(opponents.size())) return;
 
     User* opponent = opponents[choice - 1];
-
-    if (user.getCharacters().empty())
-    {
-        std::cout << "You have no characters!" << std::endl;
-        return;
-    }
-    if (opponent->getCharacters().empty())
-    {
-        std::cout << "Opponent has no characters!" << std::endl;
-        return;
-    }
+    if (user.getCharacters().empty())     { std::cout << "You have no characters!" << std::endl; return; }
+    if (opponent->getCharacters().empty()){ std::cout << "Opponent has no characters!" << std::endl; return; }
 
     Battle::run(user, *opponent);
     refreshLeaderboard();
@@ -306,12 +279,12 @@ void Game::loggedInMenu(User& user)
 {
     while (true)
     {
-        std::cout << std::endl << "=== " << user.getUsername()
+        std::cout << std::endl
+                  << "=== " << user.getUsername()
                   << "  XP:" << user.getAvailableXP()
                   << "/" << user.getTotalXP()
                   << "  Battles:" << user.getBattlesWon()
-                  << "W/" << user.getBattlesPlayed()
-                  << " ===" << std::endl
+                  << "W/" << user.getBattlesPlayed() << " ===" << std::endl
                   << "1. View characters" << std::endl
                   << "2. View items" << std::endl
                   << "3. Shop" << std::endl
@@ -323,10 +296,10 @@ void Game::loggedInMenu(User& user)
         switch (choice)
         {
             case 1: user.printCharacters(); break;
-            case 2: user.printItems(); break;
-            case 3: shopMenu(user); break;
-            case 4: battleMenu(user); break;
-            case 5: printLeaderboard(); break;
+            case 2: user.printItems();      break;
+            case 3: shopMenu(user);         break;
+            case 4: battleMenu(user);       break;
+            case 5: printLeaderboard();     break;
             case 6: return;
             default: std::cout << "Invalid choice." << std::endl;
         }
@@ -337,7 +310,8 @@ void Game::mainMenu()
 {
     while (true)
     {
-        std::cout << std::endl << "=== RPG Battler ===" << std::endl
+        std::cout << std::endl
+                  << "=== RPG Battler ===" << std::endl
                   << "1. Register" << std::endl
                   << "2. Login" << std::endl
                   << "3. Leaderboard" << std::endl

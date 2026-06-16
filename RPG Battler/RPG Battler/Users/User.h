@@ -12,6 +12,10 @@ class User {
 public:
     User();
     User(const std::string& username, const std::string& password);
+    User(User&&) = default;
+    User& operator=(User&&) = default;
+    User(const User&) = delete;
+    User& operator=(const User&) = delete;
     ~User();
 
     const std::string& getUsername() const;
@@ -34,6 +38,7 @@ public:
     void addItem(std::unique_ptr<Items> item);
     const std::vector<std::unique_ptr<Items>>& getItems() const;
     void printItems() const;
+    bool consumeItem(ItemType type);
 
     bool hasMirror() const;
     bool consumeMirror();
@@ -46,7 +51,7 @@ public:
     void recordLoss();
 
     void save(const std::string& dir) const;
-    static User load(const std::string& filepath);
+    static std::unique_ptr<User> load(const std::string& filepath);
 
     bool checkPassword(const std::string& pw) const;
 

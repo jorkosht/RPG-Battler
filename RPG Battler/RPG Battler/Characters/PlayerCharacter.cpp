@@ -11,42 +11,94 @@ PlayerCharacter::~PlayerCharacter() = default;
 
 void PlayerCharacter::ability(unsigned& dmg) {}
 
-const std::string& PlayerCharacter::getName() const { return name; }
-unsigned PlayerCharacter::getMaxHP() const { return maxHP + hpUpgrades * CharConstants::LEVEL_HP_BONUS; }
-unsigned PlayerCharacter::getCurrHP() const { return currHP; }
-unsigned PlayerCharacter::getMaxDMG() const { return maxDMG; }
-CharacterType PlayerCharacter::getType() const { return type; }
-User* PlayerCharacter::getOwner() const { return owner; }
-unsigned PlayerCharacter::getLevel() const { return level; }
-unsigned PlayerCharacter::getDmgUpgrades() const { return dmgUpgrades; }
-unsigned PlayerCharacter::getHPUpgrades() const { return hpUpgrades; }
+const std::string& PlayerCharacter::getName() const
+{
+    return name;
+}
 
-void PlayerCharacter::setCurrHP(unsigned hp) { currHP = hp; }
-void PlayerCharacter::resetHP() { currHP = getMaxHP(); }
-void PlayerCharacter::levelUpHP() { ++hpUpgrades; ++level; currHP = getMaxHP(); }
-void PlayerCharacter::levelUpDMG() { ++dmgUpgrades; ++level; }
+unsigned PlayerCharacter::getCurrHP() const
+{
+    return currHP;
+}
+
+CharacterType      PlayerCharacter::getType() const
+{
+    return type;
+}
+
+User* PlayerCharacter::getOwner() const
+{
+    return owner;
+}
+
+unsigned PlayerCharacter::getLevel() const
+{
+    return level;
+}
+
+unsigned PlayerCharacter::getDmgUpgrades() const
+{
+    return dmgUpgrades;
+}
+
+unsigned PlayerCharacter::getHPUpgrades() const
+{
+    return hpUpgrades;
+}
+
+unsigned PlayerCharacter::getMaxHP() const
+{
+    return maxHP + hpUpgrades * CharConstants::LEVEL_HP_BONUS;
+}
+
+unsigned PlayerCharacter::getMaxDMG() const
+{
+    return maxDMG;
+}
+
+void PlayerCharacter::setCurrHP(unsigned hp)
+{
+    currHP = hp;
+}
+
+void PlayerCharacter::resetHP()
+{
+    currHP = getMaxHP();
+}
+
+void PlayerCharacter::levelUpHP()
+{
+    ++hpUpgrades;
+    ++level;
+    currHP = getMaxHP();
+}
+
+void PlayerCharacter::levelUpDMG()
+{
+    ++dmgUpgrades;
+    ++level;
+}
 
 void PlayerCharacter::attack(PlayerCharacter& defender)
 {
     unsigned effectiveMax = maxDMG + dmgUpgrades;
     unsigned dmg = rand() % effectiveMax + 1;
 
-    std::cout << std::endl << "[" << name << "] rolls " << dmg << " DMG";
+    std::cout << std::endl << "[" << name << "] rolls " << dmg << " DMG" << std::endl;
 
-    if (type != CharacterType::Warrior)
+    if (type == CharacterType::Mage || type == CharacterType::Archer)
     {
-        bool canActivate = true;
+        bool offerAbility = true;
+        if (type == CharacterType::Archer)
+            offerAbility = true;
 
-        if (type == CharacterType::Archer && dmg > CharConstants::ARCHER_DMG_THRESHOLD)
-            canActivate = false;
-
-        if (canActivate)
+        if (offerAbility)
         {
-            std::cout << std::endl << "Activate your special ability? (y/n): ";
+            std::cout << "Activate your special ability? (y/n): ";
             if (ask())
             {
-                if (defender.getOwner()->consumeMirror())
-                    std::cout << "[Mirror] Defender's Mirror blocked your ability!\n";
+                if (defender.owner->consumeMirror())
+                    std::cout << "[Mirror] Opponent's Mirror blocked your ability!" << std::endl;
                 else
                     ability(dmg);
             }
@@ -59,52 +111,29 @@ void PlayerCharacter::attack(PlayerCharacter& defender)
         dmg *= 2;
     }
 
-    if (defender.getType() == CharacterType::Warrior)
+    if (defender.type == CharacterType::Warrior)
     {
         if (owner->consumeMirror())
-        {
-            std::cout << "[Mirror] Attacker's Mirror blocked Warrior's block ability!\n";
-        }
+            std::cout << "[Mirror] Attacker's Mirror blocked Warrior's block!" << std::endl;
         else
-        {
-            unsigned block = CharConstants::WARRIOR_BLOCK_MIN
-                           + rand() % CharConstants::WARRIOR_BLOCK;
-            std::cout << "[Warrior Block] " << defender.getName()
-                      << " blocks " << block << " DMG" << std::endl;
-            dmg = (dmg > block) ? dmg - block : 0;
-        }
+            defender.ability(dmg);
     }
 
-    if (dmg > 0 && defender.getOwner()->hasShield())
+    if (dmg > 0 && defender.owner->hasShield())
     {
-        std::cout << defender.getOwner()->getUsername()
+        std::cout << defender.owner->getUsername()
                   << ", use your Shield to block " << dmg << " DMG? (y/n): ";
-        if (ask())
+        if (ask() && defender.owner->consumeShield())
         {
-            if (defender.getOwner()->consumeShield())
-            {
-                std::cout << "[Shield] Damage blocked!" << std::endl;
-                dmg = 0;
-            }
+            std::cout << "[Shield] Damage blocked!" << std::endl;
+            dmg = 0;
         }
     }
 
     std::cout << "[" << name << "] deals " << dmg
               << " DMG to [" << defender.getName() << "]" << std::endl;
 
-    unsigned newHP = (defender.currHP > dmg) ? defender.currHP - dmg : 0;
-    defender.currHP = newHP;
-}
-
-void PlayerCharacter::restoreFields(unsigned maxHP, unsigned currHP, unsigned maxDMG,
-                                    unsigned level, unsigned hpUp, unsigned dmgUp)
-{
-    this->maxHP = maxHP;
-    this->currHP = currHP;
-    this->maxDMG = maxDMG;
-    this->level = level;
-    hpUpgrades = hpUp;
-    dmgUpgrades = dmgUp;
+    defender.currHP = (defender.currHP > dmg) ? defender.currHP - dmg : 0;
 }
 
 void PlayerCharacter::saveBase(std::ostream& out) const
@@ -119,9 +148,13 @@ void PlayerCharacter::saveBase(std::ostream& out) const
         << dmgUpgrades << std::endl;
 }
 
-void PlayerCharacter::loadBase(std::istream& in)
+void PlayerCharacter::restoreFields(unsigned maxHP, unsigned currHP, unsigned maxDMG,
+                                    unsigned level, unsigned hpUp, unsigned dmgUp)
 {
-    int t;
-    in >> name >> t >> maxHP >> currHP >> maxDMG >> level >> hpUpgrades >> dmgUpgrades;
-    type = static_cast<CharacterType>(t);
+    this->maxHP = maxHP;
+    this->currHP = currHP;
+    this->maxDMG = maxDMG;
+    this->level = level;
+    hpUpgrades = hpUp;
+    dmgUpgrades = dmgUp;
 }

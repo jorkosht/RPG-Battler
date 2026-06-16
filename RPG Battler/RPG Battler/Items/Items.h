@@ -14,7 +14,7 @@ public:
     Items(ItemType type, unsigned price);
     virtual ~Items();
     
-    const ItemType getType() const;
+    ItemType getType() const;
     
     void setPrice(unsigned price);
     

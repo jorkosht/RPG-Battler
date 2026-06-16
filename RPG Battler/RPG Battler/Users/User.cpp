@@ -257,9 +257,12 @@ std::unique_ptr<User> User::load(const std::string& filepath)
         std::unique_ptr<PlayerCharacter> ch;
         switch (static_cast<CharacterType>(ctype))
         {
-            case CharacterType::Warrior: ch = std::make_unique<Warrior>(cname, u.get()); break;
-            case CharacterType::Mage:    ch = std::make_unique<Mage>   (cname, u.get()); break;
-            case CharacterType::Archer:  ch = std::make_unique<Archer> (cname, u.get()); break;
+            case CharacterType::Warrior: ch = std::make_unique<Warrior>(cname, u.get());
+                break;
+            case CharacterType::Mage:    ch = std::make_unique<Mage>   (cname, u.get());
+                break;
+            case CharacterType::Archer:  ch = std::make_unique<Archer> (cname, u.get());
+                break;
             default: continue;
         }
         ch->restoreFields(maxHP, currHP, maxDMG, level, hpUp, dmgUp);

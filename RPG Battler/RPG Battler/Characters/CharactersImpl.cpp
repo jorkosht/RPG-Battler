@@ -13,7 +13,7 @@ void Warrior::ability(unsigned& dmg)
 {
     unsigned block = CharConstants::WARRIOR_BLOCK_MIN
                    + rand() % CharConstants::WARRIOR_BLOCK;
-    std::cout << "[Warrior Block] " << name << " blocks " << block << " DMG\n";
+    std::cout << "[Warrior Block] " << name << " blocks " << block << " DMG" << std::endl;
     dmg = (dmg > block) ? dmg - block : 0;
 }
 
@@ -24,7 +24,7 @@ Mage::Mage(const std::string& name, User* owner)
 void Mage::ability(unsigned& dmg)
 {
     unsigned flipped = (CharConstants::MAX_MAGE_DMG + dmgUpgrades) - dmg;
-    std::cout << "[Mage Flip] " << dmg << " -> " << flipped << " DMG\n";
+    std::cout << "[Mage Flip] " << dmg << " -> " << flipped << " DMG" << std::endl;
     dmg = flipped;
 }
 
@@ -37,11 +37,11 @@ void Archer::ability(unsigned& dmg)
     if (dmg <= CharConstants::ARCHER_DMG_THRESHOLD)
     {
         std::cout << "[Archer Double] " << dmg << " -> "
-                  << dmg * CharConstants::ARCHER_DMG_MULTIPLIER << " DMG\n";
+                  << dmg * CharConstants::ARCHER_DMG_MULTIPLIER << " DMG" << std::endl;
         dmg *= CharConstants::ARCHER_DMG_MULTIPLIER;
     }
     else
     {
-        std::cout << "[Archer Double] Damage too high to double (" << dmg << ").\n";
+        std::cout << "[Archer Double] Damage too high to double (" << dmg << ")." << std::endl;
     }
 }

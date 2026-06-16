@@ -6,6 +6,5 @@ class Beam : public Items
 {
 public:
     Beam();
-    
     void ability(User* attacker, User* defender);
 };

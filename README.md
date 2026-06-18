@@ -1,6 +1,8 @@
 Project for the OOP Practicum course at FMI:
 
--The game features a turn-based combat system where players engage in battles using three distinct hero classes. Each class has its own unique set of abilities, strengths, and statistical characteristics, allowing for different strategies and playstyles.
+The game features:
+
+-A turn-based combat system where players engage in battles using three distinct hero classes. Each class has its own unique set of abilities, strengths, and statistical characteristics, allowing for different strategies and playstyles.
 
 -A fully functional shop system is implemented, where users can purchase special items. These items can be used during battles to gain advantages or applied to heroes for leveling up and improving their overall performance.
 
